@@ -80,5 +80,99 @@ if (isset($_POST['login_user'])) {
   	}
   }
 }
+// contact USER
+if (isset($_POST['contuct_user'])) {
+  echo "Contact info";
+  $username = mysqli_real_escape_string($db, $_POST['username']);
+  $email = mysqli_real_escape_string($db, $_POST['email']);
+  $details = mysqli_real_escape_string($db, $_POST['feedback']);
+
+  if (empty($username)) {
+  	array_push($errors, "Username is required");
+  }
+  if (empty($email)) {
+  	array_push($errors, "Email is required");
+  }
+
+  if (count($errors) == 0) {
+  	
+  	$query = "INSERT INTO contacts (username, email, details) 
+  			  VALUES('$username', '$email', '$details')";
+  	mysqli_query($db, $query);
+    $_SESSION['success'] = "Succefully send info!";
+  	header('location: contact.php');
+  	
+  }
+}
+
+// contact USER
+if (isset($_POST['store_product'])) {
+  $name = mysqli_real_escape_string($db, $_POST['name']);
+  $category = mysqli_real_escape_string($db, $_POST['category']);
+  $size = mysqli_real_escape_string($db, $_POST['size']);
+  $quantity = mysqli_real_escape_string($db, $_POST['quantity']);
+  $price = mysqli_real_escape_string($db, $_POST['price']);
+  $image = null;
+  if (!empty($_FILES["image"]["name"])) {
+        $fileName = basename($_FILES["image"]["name"]); 
+        $fileType = pathinfo($fileName, PATHINFO_EXTENSION); 
+        // Allow certain file formats 
+        // $allowTypes = array('jpg','png','jpeg','gif'); 
+        // if(in_array($fileType, $allowTypes)){
+            $image = $_FILES['image']['tmp_name']; 
+            $image = addslashes(file_get_contents($image)); 
+        // }
+  }
+  if (empty($name)) {
+  	array_push($errors, "Product Name is required");
+  }
+  if (empty($category)) {
+  	array_push($errors, "Category is required");
+  }
+
+  if (count($errors) == 0) {
+  	
+  	$query = "INSERT INTO products (name, category, size, quantity, price, image) 
+  			  VALUES('$name', '$category', '$size', '$quantity', '$price', '$image')";
+  	mysqli_query($db, $query);
+  	header('location: product.php');
+  	
+  }
+}
+// update_product
+if (isset($_POST['update_product'])) {
+  $name = mysqli_real_escape_string($db, $_POST['name']);
+  $category = mysqli_real_escape_string($db, $_POST['category']);
+  $size = mysqli_real_escape_string($db, $_POST['size']);
+  $quantity = mysqli_real_escape_string($db, $_POST['quantity']);
+  $price = mysqli_real_escape_string($db, $_POST['price']);
+  $id = mysqli_real_escape_string($db, $_POST['id']);
+  if (!$id) return array_push($errors, "Select Id");
+  $image = null;
+  if (!empty($_FILES["image"]["name"])) {
+        $fileName = basename($_FILES["image"]["name"]); 
+        $fileType = pathinfo($fileName, PATHINFO_EXTENSION); 
+        // Allow certain file formats 
+        // $allowTypes = array('jpg','png','jpeg','gif'); 
+        // if(in_array($fileType, $allowTypes)){
+            $image = $_FILES['image']['tmp_name']; 
+            $image = addslashes(file_get_contents($image)); 
+        // }
+  }
+  if (empty($name)) {
+  	array_push($errors, "Product Name is required");
+  }
+  if (empty($category)) {
+  	array_push($errors, "Category is required");
+  }
+
+  if (count($errors) == 0) {
+  	
+  	$query = "UPDATE products set name='$name', category='$category', size='$size', quantity='$quantity', price='$price', image='$image' where id='$id'";
+  	mysqli_query($db, $query);
+  	header('location: product.php');
+  	
+  }
+}
 
 ?>

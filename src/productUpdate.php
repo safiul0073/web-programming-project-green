@@ -128,34 +128,43 @@
                     <input type="text" id="myInput" onkeyup="searchKey()" class="form-control" placeholder="Search..." aria-label="Username" aria-describedby="basic-addon1">
                 </div>
             </div>
-            <form class="row" action="product.php" method="post" enctype="multipart/form-data">
+            <?php 
+                $id = $_GET['id'];
+                $sql = "SELECT * FROM products WHERE id = '$id'";
+                $result = $db->query($sql);
+                $row = $result->fetch_assoc();
+                // var_dump($row);
+            ?>
+            <form class="row" action="productUpdate.php" method="post" enctype="multipart/form-data">
                 <?php include('errors.php'); ?>
                 <div class="form-group col-md-6">
                     <label for="name">Product Name</label>
-                    <input type="text" class="form-control" name="name" placeholder="Product Name" required>
+                    <input type="text" class="form-control" value="<?php echo $row['name'] ?>" name="name" placeholder="Product Name" required>
                 </div>
+                <input type="hidden" name="id" value="<?php echo $row['id'] ?>" />
                 <div class="form-group col-md-6">
                     <label for="category">Category Name</label>
-                    <input type="text" class="form-control" name="category" placeholder="Category Name" required>
+                    <input type="text" class="form-control" value="<?php echo $row['category'] ?>" name="category" placeholder="Category Name" required>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="size">Size</label>
-                    <input type="text" name="size" class="form-control" placeholder="Size" required>
+                    <input type="text" name="size" value="<?php echo $row['size'] ?>" class="form-control" placeholder="Size" required>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="image">Image</label>
                     <input type="file" name="image" class="form-control" required>
+                    <?php echo '<img src="data:image;base64,' . base64_encode($row['image']) . '" alt="Image" width="50" height="60">'; ?>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="quantity">Quantity</label>
-                    <input type="text" name="quantity" class="form-control" required>
+                    <input type="text" value="<?php echo $row['quantity'] ?>" name="quantity" class="form-control" required>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="price">Price</label>
-                    <input type="text" name="price" class="form-control" required>
+                    <input type="text" value="<?php echo $row['price'] ?>" name="price" class="form-control" required>
                 </div>
                 <div class="form-group my-4">
-                    <button type="submit" name="store_product" class="btn btn-success w-full"> Save</button>
+                    <button type="submit" name="update_product" class="btn btn-success w-full">Update</button>
                 </div>
             </form>
 
@@ -173,17 +182,6 @@
                 </thead>
                 <tbody>
                     <?php
-                    if (isset($_GET['deleteId'])) {
-                        $id = $_GET['deleteId'];
-                        $sql = "SELECT * FROM products WHERE id = '$id'";
-                        $result = $db->query($sql);
-                        $row = $result->fetch_assoc();
-                        if ($row) {
-                            $sql = "DELETE FROM products WHERE id = '$id'";
-                            $result = $db->query($sql);
-                        }
-                    }
-
                     $products = "SELECT * FROM products";
                     
                     ?>
@@ -204,8 +202,8 @@
                                 <td><?php echo empty($row['quantity']) ? "" : $row['quantity']?></td>
                                 <td><?php echo $row['price']?></td>
                                 <td>
-                                    <a href="productUpdate.php?id=<?php echo $row['id']?>">Edit</a>
-                                    <a href="product.php?deleteId=<?php echo $row['id']?>">Delete</a>
+                                    <a href="">Edit</a>
+                                    <a href="">Delete</a>
                                 </td>
                             </tr>
                     <?php
